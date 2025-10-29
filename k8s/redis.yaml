@@ -5,14 +5,16 @@ metadata:
 spec:
   ports:
     - port: 6379
+  clusterIP: None
   selector:
     app: redis
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: redis
 spec:
+  serviceName: redis
   replicas: 1
   selector:
     matchLabels:
@@ -27,3 +29,14 @@ spec:
           image: redis:7
           ports:
             - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: redis-data
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

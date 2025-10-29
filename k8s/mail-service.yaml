@@ -27,7 +27,7 @@ spec:
               echo "Kafka is ready!"
       containers:
         - name: mailservice
-          image: mailservice:latest
+          image: mailservice:1.0.0
           imagePullPolicy: Never
           ports:
             - containerPort: 8082

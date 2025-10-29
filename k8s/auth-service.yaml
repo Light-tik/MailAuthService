@@ -17,10 +17,10 @@ spec:
     spec:
       containers:
         - name: authservice
-          image: authservice:latest
+          image: authservice:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - containerPort: 8081
           env:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: "kafka:9092"
@@ -37,4 +37,4 @@ spec:
     app: authservice
   ports:
     - port: 8081
-      targetPort: 8080
+      targetPort: 8081

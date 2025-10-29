@@ -29,7 +29,7 @@ spec:
               echo "Kafka is ready!"
       containers:
         - name: mailnativeservice
-          image: mailnativeservice:latest
+          image: mailnativeservice:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8083

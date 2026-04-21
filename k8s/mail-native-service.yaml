@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailnativeservice
+  labels:
+    app: mailnativeservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailnativeservice
+  template:
+    metadata:
+      labels:
+        app: mailnativeservice
+    spec:
+      initContainers:
+        - name: wait-for-kafka
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Kafka..."
+              until nc -z kafka 9092; do
+                echo "Kafka not ready yet..."
+                sleep 2
+              done
+              echo "Kafka is ready!"
+      containers:
+        - name: mailnativeservice
+          image: mailnativeservice:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka:9092"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailnativeservice
+spec:
+  selector:
+    app: mailnativeservice
+  ports:
+    - port: 8083
+      targetPort: 8083
+  type: ClusterIP
